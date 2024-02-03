@@ -7,6 +7,8 @@ public class AppEntry(CacheService cache)
     public async Task Run()
     {
         var search = string.Empty;
+        ScheduledService.OnNewAnimeUpdate += OnNewAnimeUpdate;
+
         while (true)
         {
             Console.WriteLine($"[{DateTimeOffset.UtcNow:HH:mm:ss.fff} - USER] Getting episodes...");
@@ -31,5 +33,11 @@ public class AppEntry(CacheService cache)
             if (search?.Equals("Q", StringComparison.OrdinalIgnoreCase) == true) break;
             Console.WriteLine($"[{DateTimeOffset.UtcNow:HH:mm:ss.fff} - USER] Searching for: {search}");
         }
+    }
+
+    private void OnNewAnimeUpdate(string anime)
+    {
+        // This could trigger a UI refresh or a notification
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:HH:mm:ss.fff} - EVENT] New anime episodes: {anime}");
     }
 }

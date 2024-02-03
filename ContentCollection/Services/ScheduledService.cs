@@ -7,8 +7,13 @@ namespace ContentCollection.Services;
 
 public class ScheduledService(IServiceProvider serviceProvider) : IDisposable
 {
+    public static event Action<string>? OnNewAnimeUpdate;
     private Timer? _timer;
-    private readonly List<string> _names = ["Frieren subsplease", "Kusuriya no subsplease", "Boku no kokoro yabai subsplease", "Ember shaman king flowers"];
+
+    private readonly List<string> _names =
+        ["Frieren subsplease", "Kusuriya no subsplease", "Boku no kokoro yabai subsplease", "Ember shaman king flowers"];
+
+    private bool _initialLoad = true;
 
     public void Setup()
     {
@@ -44,8 +49,11 @@ public class ScheduledService(IServiceProvider serviceProvider) : IDisposable
                     cache.Episodes.Add(newEpisode);
                 }
 
+                if (_initialLoad) OnNewAnimeUpdate?.Invoke(animeName);
+
                 Console.WriteLine($"[{DateTimeOffset.UtcNow:HH:mm:ss.fff} - SCHEDULED] COMPLETED - {animeName}");
             });
+            _initialLoad = false;
         });
     }
 
